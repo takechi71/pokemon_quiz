@@ -3,8 +3,8 @@ function getUniqueRandomNumbers(min, max, count) {
   const uniqueNumbers = new Set();
 
   while (uniqueNumbers.size < count) {
-      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-      uniqueNumbers.add(randomNum);
+    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    uniqueNumbers.add(randomNum);
   }
 
   return Array.from(uniqueNumbers);
@@ -17,16 +17,50 @@ document.getElementById("get").addEventListener("click", async () => {
   const array_id = getUniqueRandomNumbers(1, 493, 4);
   const response1 = await fetch(apiUrl1 + array_id[0]);
   const response2 = await fetch(apiUrl2 + array_id[0]);
-  parameter1 = await response1.json();
-  parameter2 = await response2.json();
-  const response = await fetch(apiUrl + Math.floor(Math.random() * 493));
-  const pokemon = await response.json();
+  
+  const response3 = await fetch(apiUrl2 + array_id[1]);
+  const response4 = await fetch(apiUrl2 + array_id[2]);
+  const response5 = await fetch(apiUrl2 + array_id[3]);
+
+  const pokemon1_p1 = await response1.json();
+  const pokemon1_p2 = await response2.json();
+  
+  const pokemon2_p1 = await response3.json();
+  const pokemon3_p1 = await response4.json();
+  const pokemon4_p1 = await response5.json();
+  
   const image = document.createElement("img");
-  const name = document.createElement("p");
-  image.src = pokemon.sprites.front_default;
-  name.textContent = pokemon.name;
+  const name1 = document.createElement("p");
+  const name2 = document.createElement("p");
+  const name3 = document.createElement("p");
+  const name4 = document.createElement("p");
+  const weight = document.createElement("p");
+  const height = document.createElement("p");
+  const type = document.createElement("p");
+  const color = document.createElement("p");
+  const text = document.createElement("p");
+
+  image.src = pokemon1_p1.sprites.front_default;
+  name1.textContent = `Name: ${pokemon1_p1.name}`;
+  name2.textContent = `Name: ${pokemon2_p1.name}`;
+  name3.textContent = `Name: ${pokemon3_p1.name}`;
+  name4.textContent = `Name: ${pokemon4_p1.name}`;
+  weight.textContent = `Weight: ${pokemon1_p1.weight}`;
+  height.textContent = `Height: ${pokemon1_p1.height}`;
+  type.textContent = `Type: ${pokemon1_p1.types.map(t => t.type.name).join(", ")}`;
+  color.textContent = `Color: ${pokemon1_p2.color.name}`;
+  text.textContent = `Description: ${pokemon1_p2.flavor_text_entries.find(entry => entry.language.name === "en").flavor_text}`;
+
   const pokemonDiv = document.getElementById("pokemon");
   pokemonDiv.innerHTML = "";
   pokemonDiv.appendChild(image);
-  pokemonDiv.appendChild(name);
+  pokemonDiv.appendChild(name1);
+  pokemonDiv.appendChild(name2);
+  pokemonDiv.appendChild(name3);
+  pokemonDiv.appendChild(name4);
+  pokemonDiv.appendChild(weight);
+  pokemonDiv.appendChild(height);
+  pokemonDiv.appendChild(type);
+  pokemonDiv.appendChild(color);
+  pokemonDiv.appendChild(text);
 });
