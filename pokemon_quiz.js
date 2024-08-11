@@ -15,8 +15,8 @@ const apiUrl2 = "https://pokeapi.co/api/v2/pokemon-species/";   // ポケモン�
 
 document.getElementById("get").addEventListener("click", async () => {
   const array_id = getUniqueRandomNumbers(1, 493, 4);
-  const response1 = await fetch(apiUrl1 + array_id[0]);
-  const response2 = await fetch(apiUrl2 + array_id[0]);
+  const response1 = await fetch(apiUrl1 + array_id[random]);
+  const response2 = await fetch(apiUrl2 + array_id[random]);
   
   const response3 = await fetch(apiUrl2 + array_id[1]);
   const response4 = await fetch(apiUrl2 + array_id[2]);
@@ -38,19 +38,19 @@ document.getElementById("get").addEventListener("click", async () => {
   const height = document.createElement("p");
   const type = document.createElement("p");
   const color = document.createElement("p");
-  const text = document.createElement("p");
+  const shape = document.createElement("p");
 
   image.src = pokemon1_p1.sprites.front_default;
   name1.textContent = `Name: ${pokemon1_p1.name}`;
   name2.textContent = `Name: ${pokemon2_p1.name}`;
   name3.textContent = `Name: ${pokemon3_p1.name}`;
   name4.textContent = `Name: ${pokemon4_p1.name}`;
-  weight.textContent = `Weight: ${pokemon1_p1.weight}`;
-  height.textContent = `Height: ${pokemon1_p1.height}`;
+  weight.textContent = `Weight: ${pokemon1_p1.weight / 10} kg`;
+  height.textContent = `Height: ${pokemon1_p1.height / 10} m`;
   type.textContent = `Type: ${pokemon1_p1.types.map(t => t.type.name).join(", ")}`;
   color.textContent = `Color: ${pokemon1_p2.color.name}`;
-  text.textContent = `Description: ${pokemon1_p2.flavor_text_entries.find(entry => entry.language.name === "en").flavor_text}`;
-
+  shape.textContent = `shape: ${pokemon1_p2.shape.name}`;
+  
   const pokemonDiv = document.getElementById("pokemon");
   pokemonDiv.innerHTML = "";
   pokemonDiv.appendChild(image);
@@ -62,5 +62,5 @@ document.getElementById("get").addEventListener("click", async () => {
   pokemonDiv.appendChild(height);
   pokemonDiv.appendChild(type);
   pokemonDiv.appendChild(color);
-  pokemonDiv.appendChild(text);
+  pokemonDiv.appendChild(shape);
 });
