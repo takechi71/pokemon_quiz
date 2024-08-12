@@ -10,12 +10,60 @@ function getUniqueRandomNumbers(min, max, count) {
   return Array.from(uniqueNumbers);
 }
 
-const apiUrl1 = "https://pokeapi.co/api/v2/pokemon/";   // ポケモンの基本情報を取得するためのURL
-const apiUrl2 = "https://pokeapi.co/api/v2/pokemon-species/";   // 上記のURLでは取得できない情報を取得するためのURL
+// 答えをチェックする関数
+function checkAnswer(selectedIndex) {
+  if (selectedIndex == ansIndex) {
+      document.getElementById("result").innerHTML = "Correct!";
+  } else {
+      document.getElementById("result").innerHTML = "Incorrect!";
+  }
+  detail = document.getElementById("detail");
+  detail.innerHTML = `
+  <img src="${pokemons[ansIndex].sprites.front_default}" alt="Pokemon">
+  <p>Name：${pokemons[ansIndex].name}</p>  
+  <p>Weight: ${pokemons[ansIndex].weight / 10} kg</p>
+  <p>Height: ${pokemons[ansIndex].height / 10} m</p>
+  <p>Type: ${pokemons[ansIndex].types.map(t => t.type.name).join(", ")}</p>
+  <p>Description：${parameter.flavor_text_entries.find(entry => entry.language.name === 'en').flavor_text}</p>
+`;
+}
 
-document.getElementById("get").addEventListener("click", async () => {
+async function generateQuiz() {
+  const apiUrl1 = "https://pokeapi.co/api/v2/pokemon/";   // ポケモンの基本情報を取得するためのURL
+  const apiUrl2 = "https://pokeapi.co/api/v2/pokemon-species/";   // 上記のURLでは取得できない情報を取得するためのURL
+  
   const array_id = getUniqueRandomNumbers(1, 493, 4);
   ansIndex = Math.floor(Math.random() * 4);   // 答えとするポケモンをランダムに決める.
+  
+  const responses = await Promise.all(array_id.map(id => fetch(apiUrl1 + id)));
+  pokemons = await Promise.all(responses.map(response => response.json()));
+  
+  const response = await fetch(apiUrl2 + array_id[ansIndex]);
+  parameter = await response.json();
+  
+  document.getElementById("quiz").innerHTML = "What is this Pokemon?";
+  
+  const pokemonDiv = document.getElementById("pokemon");
+  pokemonDiv.innerHTML = `
+    <img src="${pokemons[ansIndex].sprites.front_default}" style="filter: brightness(0%); " alt="Pokemon Silhouette">    
+`;
+  // ボタンを表示するためのコンテナを取得
+  const choice = document.getElementById("choice");
+  choice.innerHTML = "";
+  document.getElementById("result").innerHTML = "";
+
+  // 4つのボタンを生成
+  pokemons.forEach((pokemon, index) => {
+    const button = document.createElement("button");
+    button.textContent = pokemon.name;  // ボタンのテキストにポケモンの名前を設定
+    button.addEventListener("click", () => checkAnswer(index));  // ボタンがクリックされたときにcheckAnswer関数を呼び出す
+    choice.appendChild(button);  // ボタンをコンテナに追加
+  });
+
+  
+  }
+
+/*document.getElementById("get").addEventListener("click", async () => {
   const responses = await Promise.all(array_id.map(id => fetch(apiUrl1 + id)));
   const pokemons = await Promise.all(responses.map(response => response.json()));
 
@@ -27,8 +75,6 @@ document.getElementById("get").addEventListener("click", async () => {
   const weight = document.createElement("p");
   const height = document.createElement("p");
   const type = document.createElement("p");
-  const color = document.createElement("p");
-  const shape = document.createElement("p");
 
   image.src = pokemon1.sprites.front_default;
   name1.textContent = `Name: ${pokemon1.name}`;
@@ -53,4 +99,4 @@ document.getElementById("get").addEventListener("click", async () => {
   pokemonDiv.appendChild(type);
   pokemonDiv.appendChild(color);
   pokemonDiv.appendChild(shape);
-});
+});*/
